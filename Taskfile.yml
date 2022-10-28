@@ -1,0 +1,52 @@
+# Copyright (C) 2022 Explore.dev, Unipessoal Lda - All Rights Reserved
+# Use of this source code is governed by a license that can be
+# found in the LICENSE file
+
+version: "3"
+
+tasks:
+  deps:
+    summary: Install dependencies
+    cmds:
+      - go mod download
+      - go mod tidy
+  format:
+    summary: Formats the code
+    cmds:
+      - go fmt ./...
+  lint:
+    summary: |
+      Runs the linter
+      If error try `brew install golangci-lint`
+    cmds:
+      - golangci-lint run
+  build:
+    aliases: [b]
+    summary: |
+      Builds the project.
+      Run with --watch or -w to watch for changes on Go files.
+    cmds:
+      - go build ./...
+    sources:
+      - ./**/*.go
+  test:
+    aliases: [t]
+    desc: Runs the tests
+    cmds:
+      - go test ./...
+  clean:
+    summary: Cleans the project
+    cmds:
+      - rm -rf .task
+  check:
+    aliases: [c]
+    summary: Runs code format, lint, test and build
+    deps:
+      - deps
+      - format
+      - lint
+      - test
+      - build
+  default:
+    deps:
+      - build
